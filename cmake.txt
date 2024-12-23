@@ -1,0 +1,17 @@
+// # 设置最低版本要求
+cmake_minimum_required(VERSION 3.10)
+
+// # 设置项目名称
+project(os_system)
+
+// # 设置 C++ 标准（C++11、C++17 或更高）
+set(CMAKE_CXX_STANDARD 17)
+
+// # 包含头文件目录
+include_directories(banker.hpp)
+
+// # 搜索 src 文件夹下的所有源文件
+file(GLOB SOURCES "*.cpp")
+
+// # 添加可执行文件
+add_executable(${PROJECT_NAME} ${SOURCES})
