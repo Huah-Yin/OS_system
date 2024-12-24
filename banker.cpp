@@ -120,7 +120,6 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
             available_tmp = available_tmp - request;
             allocation_tmp.add_two_one(request, id);
             need_tmp.sub_two_one(request, id);
-            
         }
         else
         {
@@ -133,4 +132,39 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
         str = "error-> process" + to_string(id) + " 请求的资源数大于该进程声称的资源,该进程需等待 !!!";
         cout << str << endl;
     }
+}
+string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
+{
+    string str = "";
+    int pid_kinds = need.rows();
+    int pid_statue[pid_kinds] = {0}; //
+    int count = 0;
+    matrix_one work = available;
+    while (count < pid_kinds)
+    {
+        for (int i = 0; i < pid_kinds; i++)
+        {
+            if (!pid_statue[i] && matrix_one(need.matrix[i]) <= work)
+            {
+                work = work + matrix_one(allocation.matrix[i]);
+                pid_statue[i] = 1;
+                string tmp = "  " + to_string(i) + "-->"; // itoa(i)将i转换为字符串
+                str += tmp;
+            }
+        }
+        count++;
+    }
+    for (int i = 0; i < pid_kinds; i++)
+    {
+        if (pid_statue[i] == 0)
+        {
+            str = "error-> 系统不安全 !!!";
+            break;
+        }
+        else
+        {
+            str = "success-> 系统安全 !!!";
+        }
+    }
+    return str;
 }
