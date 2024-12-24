@@ -90,15 +90,19 @@ void print_matrix(vector<int> &matrix)
     }
     cout << endl;
 }
-// int main()
-// {
-//     string path_available = "F:\\EXCEL\\Available.csv";
-//     string path_max = "F:\\EXCEL\\Max.csv";
-//     vector<int> available;
-//     vector<vector<int>> max;
-//     read_csv(available, path_available);
-//     read_csv(max, path_max);
-//     print_matrix(available);
-//     print_matrix(max);
-//     return 0;
-// }
+void str_to_int(string &s, int &id, vector<int> &request)
+{
+    istringstream input(s);
+    string num;
+    input >> num;
+    id = stoi(num); // 获取进程编号
+    while (input >> num)
+    {
+        request.push_back(stoi(num)); // 获取请求向量
+    }
+}
+string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, string &request)
+{
+    string str = "";
+    matrix_two need = max - allocation;
+}

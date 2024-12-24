@@ -56,15 +56,24 @@ class matrix_two
 {
 public:
     vector<vector<int>> matrix;
-    matrix_two(vector<vector<int>> const &read_matrix)
+    matrix_two(const vector<vector<int>> &read_matrix, bool select = false)
     {
-        for (auto tmp : read_matrix)
+        if (!select)
         {
-            matrix.emplace_back(tmp);
+            matrix = move(read_matrix); // quickly copy
+        }
+        else
+        {
+            for (auto tmp : read_matrix)
+            {
+                matrix.push_back(tmp);
+            }
         }
     }
+
     matrix_two(int row, int column, int value = 0)
     {
+
         matrix.resize(row, vector<int>(column, value));
     }
     // 获取行数和列数
@@ -117,4 +126,6 @@ void read_csv(vector<int> &available, string &csv_path);
 void read_csv(vector<vector<int>> &two_matrix, string &csv_path);
 void print_matrix(vector<vector<int>> const &matrix);
 void print_matrix(vector<int> const &matrix);
+void str_to_int(string &s, int &id, vector<int> &request);
+string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, string &request);
 #endif

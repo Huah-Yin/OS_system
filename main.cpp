@@ -1,128 +1,59 @@
-// #include <string>
-// #include <vector>
-// #include <list>
-// #include <iostream>
-// #include <sstream>
-// #include "banker.hpp"
+#include <string>
+#include <vector>
+#include <list>
+#include <iostream>
+#include <sstream>
+#include "banker.hpp"
 // #define int unsigned long long
-// using namespace std;
+using namespace std;
 
-// str_to_int(string &amp; s, vector &lt; int &gt; &amp; tmp)
-// {
+int main()
+{
+    string path_available = "F:\\EXCEL\\Available.csv";
+    string path_max = "F:\\EXCEL\\Max.csv";
+    string path_allocation = "F:\\EXCEL\\Allocation.csv";
 
-//     istringstream input(s);
-//     int num;
-//     while (input & gt; &gt; num)
-//     {
-//         tmp.push_back(num);
-//     }
-//     return tmp;
-// }
-// class process
-// {
-// public:
-//     string name;
-//     int pid;
-//     vector &lt;
-//     int &gt;
-//     max_matrix;
-//     vector &lt;
-//     int &gt;
-//     allocation_matrix;
-//     vector &lt;
-//     int &gt;
-//     need_matrix;
+    vector<int> available;
+    vector<vector<int>> allocation;
+    vector<vector<int>> max;
 
-//     process(string n, int pid) : name(n), pid(pid) {}
-//     string get_name() const
-//     {
-//         return name;
-//     }
-//     int get_pid() const
-//     {
-//         return pid;
-//     }
-//     void my_print() const
-//     {
-//         cout & lt;
-//         &lt;
-//         "process name and pid :" & lt;
-//         &lt;
-//         this - &gt;
-//         name & lt;
-//         &lt;
-//         this - &gt;
-//         pid & lt;
-//         &lt;
-//         endl;
-//         cout & lt;
-//         &lt;
-//         "max_matrix : " & lt;
-//         &lt;
-//         endl;
-//         for (auto tmp : need_matrix)
-//         {
-//             cout & lt;
-//             &lt;
-//             tmp & lt;
-//             &lt;
-//             "  ";
-//         }
-//         cout & lt;
-//         &lt;
-//         endl;
-//         cout & lt;
-//         &lt;
-//         " max_matrix :" & lt;
-//         &lt;
-//         endl;
-//         for (auto tmp : max_matrix)
-//         {
-//             cout & lt;
-//             &lt;
-//             tmp & lt;
-//             &lt;
-//             "  ";
-//         }
-//     }
-// };
-// void push_value(process &amp; proce_i)
-// {
-// }
-// int main()
-// {
-//     int num;
-//     num = 5;
-//     list & lt;
-//     process & gt;
-//     proce;
-//     string name_pid;
+    read_csv(available, path_available);
+    read_csv(max, path_max);
+    read_csv(allocation, path_allocation);
+    // 浅拷贝
+    matrix_one available_matrix(available);
+    matrix_two max_matrix(max);
+    matrix_two allocation_matrix(allocation);
 
-//     for (int i = 0; i & lt; num; i++)
-//     {
-//         cout & lt;
-//         &lt;
-//         " please input name_pid" & lt;
-//         &lt;
-//         endl;
-//         getline(cin, name_pid);
-//         istringstream input(name_pid);
-//         string name;
-//         int pid;
-//         input & gt;
-//         &gt;
-//         name & gt;
-//         &gt;
-//         pid;
-//         process tmp(name, pid);
+    while (true)
+    {
+        string request_str;
+        cout << " 请输入进程 id 与请求向量 (最初始的进程用 0 表示,以空格分开):";
+        getline(cin, request_str);
+        if (request_str.empty())
+        {
+            cout << "输入不可为空 !!!" << endl;
+        }
+        else
+        {
+            int id;
+            vector<int> request_vector;
+            str_to_int(request_str, id, request_vector);
+        }
+        // 先构造一个新的matrix，相减，然后再 move。
+        string str = sec_str(available_matrix, allocation_matrix, max_matrix);
+        if (str.empty())
+        {
+            cout << "  不存在安全序列为!!!" << endl;
+        }
+        else
+        {
 
-//         string max;
-//         getline(cin, max);
-//         vector & lt;
-//         int &gt;
-//         tmp;
-//         prname_pid.max_matrix = str_to_int(max, tmp);
-//         proce.push_back()
-//     }
-//     return 0;
-// }
+            cout << "  安全序列为:  " << str << endl;
+        }
+    }
+
+    print_matrix(available);
+    print_matrix(max);
+    return 0;
+}
