@@ -25,7 +25,8 @@ void read_csv(vector<int> &available, string &csv_path)
                 stringstream ss(line); // 分割
                 while (getline(ss, cell, ','))
                 {
-                    available.emplace_back(stoi(cell)); // 将字符串转换为整数
+                    int num = stoi(cell);
+                    available.emplace_back(num); // 将字符串转换为整数
                 }
             }
             row++; // 跳过第一行
@@ -55,7 +56,10 @@ void read_csv(vector<vector<int>> &two_matrix, string &csv_path)
                 {
                     if (column)
                     {
-                        temp.emplace_back(stoi(cell));
+                        if (cell.empty())
+                            break;
+                        int num = stoi(cell);
+                        temp.emplace_back(num); // 将字符串转换为整数
                     }
                     column++; // 读取第二列
                 }
@@ -67,21 +71,34 @@ void read_csv(vector<vector<int>> &two_matrix, string &csv_path)
 }
 void print_matrix(vector<vector<int>> &matrix)
 {
-    string col=" | ";
+    string col = " | ";
     for (auto &row : matrix)
     {
         for (auto &cell : row)
         {
-            cout <<col<< cell;
+            cout << col << cell;
         }
         cout << endl;
     }
 }
 void print_matrix(vector<int> &matrix)
 {
-    string col=" | ";
-    for (auto &cell : matrix) 
+    string col = " | ";
+    for (auto &cell : matrix)
     {
-        cout <<col<< cell;
+        cout << col << cell;
     }
+    cout << endl;
 }
+// int main()
+// {
+//     string path_available = "F:\\EXCEL\\Available.csv";
+//     string path_max = "F:\\EXCEL\\Max.csv";
+//     vector<int> available;
+//     vector<vector<int>> max;
+//     read_csv(available, path_available);
+//     read_csv(max, path_max);
+//     print_matrix(available);
+//     print_matrix(max);
+//     return 0;
+// }
