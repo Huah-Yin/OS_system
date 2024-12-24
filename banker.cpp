@@ -133,6 +133,15 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
         cout << str << endl;
     }
 }
+bool check(int *arr, int kinds)
+{
+    for (int i = 0; i < kinds; i++)
+    {
+        if (!arr[i])
+            return false;
+    }
+    return true;
+}
 string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
 {
     string str = "";
@@ -140,6 +149,7 @@ string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
     int pid_statue[pid_kinds] = {0}; //
     int count = 0;
     matrix_one work = available;
+    bool made_safe = false;
     while (count < pid_kinds)
     {
         for (int i = 0; i < pid_kinds; i++)
@@ -150,21 +160,19 @@ string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
                 pid_statue[i] = 1;
                 string tmp = "  " + to_string(i) + "-->"; // itoa(i)将i转换为字符串
                 str += tmp;
+                made_safe = true;
+                break;
             }
         }
-        count++;
-    }
-    for (int i = 0; i < pid_kinds; i++)
-    {
-        if (pid_statue[i] == 0)
+        if (!made_safe)
+            break;
+        if (check(pid_statue, pid_kinds))
         {
-            str = "error-> 系统不安全 !!!";
+            made_safe = true;
             break;
         }
-        else
-        {
-            str = "success-> 系统安全 !!!";
-        }
+
+        count++;
     }
     return str;
 }

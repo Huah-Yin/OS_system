@@ -14,15 +14,12 @@ public:
         }
         else
         {
-            for (auto tmp : read_matrix)
+            int len = read_matrix.size();
+            matrix.resize(len);
+            for (int i = 0; i < len; ++i)
             {
-                matrix.push_back(tmp);
+                matrix[i] = read_matrix[i];
             }
-        }
-
-        for (auto tmp : read_matrix)
-        {
-            matrix.emplace_back(tmp);
         }
     }
     matrix_one(int size, int value = 0)
@@ -32,6 +29,12 @@ public:
     int rows() const
     {
         return matrix.size();
+    }
+    matrix_one operator=(const matrix_one &other)
+    {
+        bool flag = true;
+        matrix_one(other.matrix, flag);
+        return *this;
     }
     matrix_one operator+(matrix_one const &other)
     {
@@ -46,6 +49,7 @@ public:
             {
                 result.matrix[i] = matrix[i] + other.matrix[i];
             }
+            return result;
         }
     }
     matrix_one operator-(matrix_one const &other)
@@ -61,6 +65,7 @@ public:
             {
                 result.matrix[i] = matrix[i] - other.matrix[i];
             }
+            return result;
         }
     }
 
@@ -91,13 +96,19 @@ public:
     {
         if (!select)
         {
-            matrix = move(read_matrix); // quickly copy
+            matrix = move(read_matrix); // move copy
         }
         else
         {
-            for (auto tmp : read_matrix)
+            int row = read_matrix.size();
+            int column = read_matrix[0].size();
+            matrix.resize(row, vector<int>(column));
+            for (int i = 0; i < row; i++)
             {
-                matrix.push_back(tmp);
+                for (int j = 0; j < column; j++)
+                {
+                    matrix[i][j] = read_matrix[i][j];
+                }
             }
         }
     }
@@ -144,8 +155,8 @@ public:
             {
                 this->matrix[row][i] += other.matrix[i];
             }
+            return *this;
         }
-        return *this;
     }
     matrix_two sub_two_one(matrix_one const &other, int row)
     {
@@ -159,8 +170,8 @@ public:
             {
                 this->matrix[row][i] -= other.matrix[i];
             }
+            return *this;
         }
-        return *this;
     }
     matrix_two operator+(matrix_two const &other)
     {
@@ -178,6 +189,7 @@ public:
                     result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
                 }
             }
+            return result;
         }
     }
     matrix_two operator-(matrix_two const &other)
@@ -196,7 +208,14 @@ public:
                     result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
                 }
             }
+            return result;
         }
+    }
+    matrix_two operator=(matrix_two const &other)
+    {
+        bool flag = true;
+        matrix_two(other.matrix, flag);
+        return *this;
     }
     bool operator<=(matrix_two const &other)
     {
