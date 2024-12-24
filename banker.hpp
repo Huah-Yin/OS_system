@@ -6,8 +6,20 @@ class matrix_one
 {
 public:
     vector<int> matrix;
-    matrix_one(vector<int> const &read_matrix)
+    matrix_one(vector<int> const &read_matrix, bool flag = false)
     {
+        if (!flag)
+        {
+            matrix = move(read_matrix);
+        }
+        else
+        {
+            for (auto tmp : read_matrix)
+            {
+                matrix.push_back(tmp);
+            }
+        }
+
         for (auto tmp : read_matrix)
         {
             matrix.emplace_back(tmp);
@@ -51,6 +63,25 @@ public:
             }
         }
     }
+
+    // 运算符重载 <=，返回一个布尔值
+    bool operator<=(const matrix_one &other) const
+    {
+        if (other.rows() != this->rows())
+            throw invalid_argument("矩阵维度不匹配");
+        else
+        {
+            // 比较每个元素，如果有任何不满足条件的，返回 false
+            for (int i = 0; i < this->rows(); i++)
+            {
+                if (this->matrix[i] > other.matrix[i])
+                {
+                    return false; // 只要有一个元素不满足，返回 false
+                }
+            }
+        }
+        return true;
+    }
 };
 class matrix_two
 {
@@ -84,6 +115,52 @@ public:
     int cols() const
     {
         return matrix.empty() ? 0 : matrix[0].size();
+    }
+    // matrix_two operator+(matrix_one &&other, int row)
+    // {
+    //     if (this->cols() != other.rows())
+    //     {
+    //         throw invalid_argument("矩阵维度不匹配");
+    //     }
+    //     else
+    //     {
+    //         auto matrix_two result = move(*this);
+    //         for (int i = 0; i < result.cols(); i++)
+    //         {
+    //             result.matrix[row][i] += other.matrix[i];
+    //         }
+    //     }
+    //     return result;
+    // }
+    matrix_two add_two_one(matrix_one const &other, int row)
+    {
+        if (this->cols() != other.rows())
+        {
+            throw invalid_argument("矩阵维度不匹配");
+        }
+        else
+        {
+            for (int i = 0; i < this->cols(); i++)
+            {
+                this->matrix[row][i] += other.matrix[i];
+            }
+        }
+        return *this;
+    }
+    matrix_two sub_two_one(matrix_one const &other, int row)
+    {
+        if (this->cols() != other.rows())
+        {
+            throw invalid_argument("矩阵维度不匹配");
+        }
+        else
+        {
+            for (int i = 0; i < this->cols(); i++)
+            {
+                this->matrix[row][i] -= other.matrix[i];
+            }
+        }
+        return *this;
     }
     matrix_two operator+(matrix_two const &other)
     {
@@ -121,11 +198,33 @@ public:
             }
         }
     }
+    bool operator<=(matrix_two const &other)
+    {
+        if (other.rows() != rows() || other.cols() != cols())
+        {
+            throw invalid_argument("矩阵维度不匹配");
+        }
+        else
+        {
+            // 比较每个元素，如果有任何不满足条件的，返回 false
+            for (int i = 0; i < rows(); ++i)
+            {
+                for (int j = 0; j < cols(); ++j)
+                {
+                    if (matrix[i][j] > other.matrix[i][j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
 };
 void read_csv(vector<int> &available, string &csv_path);
 void read_csv(vector<vector<int>> &two_matrix, string &csv_path);
 void print_matrix(vector<vector<int>> const &matrix);
 void print_matrix(vector<int> const &matrix);
 void str_to_int(string &s, int &id, vector<int> &request);
-string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, string &request);
+string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, const matrix_one &request, int &id);
 #endif

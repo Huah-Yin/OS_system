@@ -39,17 +39,16 @@ int main()
             int id;
             vector<int> request_vector;
             str_to_int(request_str, id, request_vector);
-        }
-        // 先构造一个新的matrix，相减，然后再 move。
-        string str = sec_str(available_matrix, allocation_matrix, max_matrix);
-        if (str.empty())
-        {
-            cout << "  不存在安全序列为!!!" << endl;
-        }
-        else
-        {
-
-            cout << "  安全序列为:  " << str << endl;
+            // 先构造一个新的matrix，相减，然后再 move。
+            string str = sec_str(available_matrix, allocation_matrix, max_matrix, matrix_one(request_vector),id);
+            if (str.empty())
+            {
+                cout << "  不存在安全序列为!!!" << endl;
+            }
+            else
+            {
+                cout << "  安全序列为:  " << str << endl;
+            }
         }
     }
 

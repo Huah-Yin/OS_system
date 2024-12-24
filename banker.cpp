@@ -101,8 +101,36 @@ void str_to_int(string &s, int &id, vector<int> &request)
         request.push_back(stoi(num)); // 获取请求向量
     }
 }
-string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, string &request)
+string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, const matrix_one &request, int &id)
 {
     string str = "";
     matrix_two need = max - allocation;
+    int kinds = available.rows();                     // 资源的种类
+    int process = allocation.rows();                  // 进程数
+    if (request <= matrix_one(need.matrix[id], true)) // deep copy
+    {
+        if (request <= available)
+        {
+            // deep copy
+            matrix_one available_tmp(available.matrix, true);
+            matrix_two allocation_tmp(allocation.matrix, true);
+            matrix_two need_tmp(need.matrix, true);
+
+            // 运算符重载 -矩阵运算
+            available_tmp = available_tmp - request;
+            allocation_tmp.add_two_one(request, id);
+            need_tmp.sub_two_one(request, id);
+            
+        }
+        else
+        {
+            str = "error-> process" + to_string(id) + " 请求的资源数大于可用资源数,该进程需等待 !!!";
+            cout << str << endl;
+        }
+    }
+    else
+    {
+        str = "error-> process" + to_string(id) + " 请求的资源数大于该进程声称的资源,该进程需等待 !!!";
+        cout << str << endl;
+    }
 }
