@@ -11,7 +11,7 @@ void read_csv(vector<int> &available, string &csv_path)
     ifstream file(csv_path);
     if (!file.is_open())
     {
-        cout << "error->无法读取该文件" << endl;
+        cout << "error->无法读取该文件\n";
     }
     else
     {
@@ -38,7 +38,7 @@ void read_csv(vector<vector<int>> &two_matrix, string &csv_path)
     ifstream file(csv_path);
     if (!file.is_open())
     {
-        cout << "error->无法读取该文件" << endl;
+        // cout << "error->无法读取该文件" << endl;
     }
     else
     {
@@ -120,20 +120,22 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
             available_tmp = available_tmp - request;
             allocation_tmp.add_two_one(request, id);
             need_tmp.sub_two_one(request, id);
+            str = is_safe(available_tmp, allocation_tmp, need_tmp);
         }
         else
         {
-            str = "error-> process" + to_string(id) + " 请求的资源数大于可用资源数,该进程需等待 !!!";
+            str = "  error-> process  " + to_string(id) + " 请求的资源数大于可用资源数,该进程需等待 !!!";
             cout << str << endl;
         }
     }
     else
     {
-        str = "error-> process" + to_string(id) + " 请求的资源数大于该进程声称的资源,该进程需等待 !!!";
+        str = "  error-> process  " + to_string(id) + " 请求的资源数大于该进程声称的资源,该进程需等待 !!!";
         cout << str << endl;
     }
+    return str;
 }
-bool check(int *arr, int kinds)
+bool check(vector<int> &arr, int kinds)
 {
     for (int i = 0; i < kinds; i++)
     {
@@ -145,34 +147,37 @@ bool check(int *arr, int kinds)
 string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
 {
     string str = "";
-    int pid_kinds = need.rows();
-    int pid_statue[pid_kinds] = {0}; //
+    int pid_kinds = need.rows(); // 进程数
+    vector<int> pid_statue(pid_kinds, 0);
     int count = 0;
     matrix_one work = available;
-    bool made_safe = false;
     while (count < pid_kinds)
     {
+        bool chosen_process = false; // 默认没有选择进程.
         for (int i = 0; i < pid_kinds; i++)
         {
             if (!pid_statue[i] && matrix_one(need.matrix[i]) <= work)
             {
-                work = work + matrix_one(allocation.matrix[i]);
+                work += matrix_one(allocation.matrix[i]);
                 pid_statue[i] = 1;
-                string tmp = "  " + to_string(i) + "-->"; // itoa(i)将i转换为字符串
+                string tmp = to_string(i) + "-->"; // itoa(i)将i转换为字符串
+                count++;                           // 有效的进程数量
+                chosen_process = true;             // 表示有进程被选择
                 str += tmp;
-                made_safe = true;
                 break;
             }
         }
-        if (!made_safe)
-            break;
-        if (check(pid_statue, pid_kinds))
+        if (!chosen_process)
         {
-            made_safe = true;
+            cout << " no process can be chosen ,please try agagin !!!" << endl;
             break;
         }
-
-        count++;
+        if (check(pid_statue, pid_kinds))
+        { // 全部进程的状态都为 1
+            break;
+        }
     }
+    if (count < pid_kinds) // 假如出现 1-->3 -->  后面无进程可以满足的情况
+        str = "";
     return str;
 }

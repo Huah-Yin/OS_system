@@ -1,8 +1,9 @@
 #include <string>
 #include <vector>
-#include <list>
+#include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include "banker.hpp"
 // #define int unsigned long long
 using namespace std;
@@ -24,15 +25,14 @@ int main()
     matrix_one available_matrix(available);
     matrix_two max_matrix(max);
     matrix_two allocation_matrix(allocation);
-
     while (true)
     {
         string request_str;
-        cout << " 请输入进程 id 与请求向量 (最初始的进程用 0 表示,以空格分开):";
+        printf(" please input id  and request matrix :");
         getline(cin, request_str);
         if (request_str.empty())
         {
-            cout << "输入不可为空 !!!" << endl;
+            cout << "no null !!!" << endl;
         }
         else
         {
@@ -40,19 +40,22 @@ int main()
             vector<int> request_vector;
             str_to_int(request_str, id, request_vector);
             // 先构造一个新的matrix，相减，然后再 move。
-            string str = sec_str(available_matrix, allocation_matrix, max_matrix, matrix_one(request_vector),id);
-            if (str.empty())
+            string str = "";
+            matrix_one request(request_vector);
+            str = sec_str(available_matrix, allocation_matrix, max_matrix, request, id);
+            if (str.at(0) == ' ')
             {
-                cout << "  不存在安全序列为!!!" << endl;
+                cout << "  !!!" << endl;
             }
             else
             {
-                cout << "  安全序列为:  " << str << endl;
+                cout << " SecStr= " << str << endl;
+                // 数值更新 need[]=max-allocation,max一直未改变，所以不用更新need,只需在函数中计算
+                available_matrix -= request;
+                allocation_matrix.add_two_one(request, id);
+                // print_matrix(available_matrix.matrix);
             }
         }
     }
-
-    print_matrix(available);
-    print_matrix(max);
     return 0;
 }

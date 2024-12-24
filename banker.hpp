@@ -1,6 +1,7 @@
-#ifndef BANKER_HPP
-#define BANKER_HPP
+#ifndef _BANKER_HPP
+#define _BANKER_HPP
 #include <vector>
+#include <stdexcept>
 using namespace std;
 class matrix_one
 {
@@ -36,27 +37,26 @@ public:
         matrix_one(other.matrix, flag);
         return *this;
     }
-    matrix_one operator+(matrix_one const &other)
+    matrix_one operator+=(matrix_one const &other)
     {
         if (other.rows() != rows())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
-            matrix_one result(this->rows());
             for (int i = 0; i < rows(); ++i)
             {
-                result.matrix[i] = matrix[i] + other.matrix[i];
+                this->matrix[i] += other.matrix[i];
             }
-            return result;
+            return *this;
         }
     }
     matrix_one operator-(matrix_one const &other)
     {
         if (other.rows() != rows())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
@@ -68,12 +68,27 @@ public:
             return result;
         }
     }
+    matrix_one operator-=(matrix_one const &other)
+    {
+        if (other.rows() != rows())
+        {
+            throw invalid_argument("矩阵维度不匹配\n");
+        }
+        else
+        {
+            for (int i = 0; i < rows(); ++i)
+            {
+                this->matrix[i] -= other.matrix[i];
+            }
+            return *this;
+        }
+    }
 
     // 运算符重载 <=，返回一个布尔值
     bool operator<=(const matrix_one &other) const
     {
         if (other.rows() != this->rows())
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         else
         {
             // 比较每个元素，如果有任何不满足条件的，返回 false
@@ -127,27 +142,12 @@ public:
     {
         return matrix.empty() ? 0 : matrix[0].size();
     }
-    // matrix_two operator+(matrix_one &&other, int row)
-    // {
-    //     if (this->cols() != other.rows())
-    //     {
-    //         throw invalid_argument("矩阵维度不匹配");
-    //     }
-    //     else
-    //     {
-    //         auto matrix_two result = move(*this);
-    //         for (int i = 0; i < result.cols(); i++)
-    //         {
-    //             result.matrix[row][i] += other.matrix[i];
-    //         }
-    //     }
-    //     return result;
-    // }
+
     matrix_two add_two_one(matrix_one const &other, int row)
     {
         if (this->cols() != other.rows())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
@@ -162,7 +162,7 @@ public:
     {
         if (this->cols() != other.rows())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
@@ -173,30 +173,29 @@ public:
             return *this;
         }
     }
-    matrix_two operator+(matrix_two const &other)
+    matrix_two operator+=(matrix_two const &other)
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
-            matrix_two result(this->rows(), this->cols());
             for (int i = 0; i < rows(); ++i)
             {
                 for (int j = 0; j < cols(); ++j)
                 {
-                    result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+                    this->matrix[i][j] += other.matrix[i][j];
                 }
             }
-            return result;
+            return *this;
         }
     }
     matrix_two operator-(matrix_two const &other)
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
@@ -221,7 +220,7 @@ public:
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("矩阵维度不匹配");
+            throw invalid_argument("矩阵维度不匹配\n");
         }
         else
         {
@@ -246,4 +245,6 @@ void print_matrix(vector<vector<int>> const &matrix);
 void print_matrix(vector<int> const &matrix);
 void str_to_int(string &s, int &id, vector<int> &request);
 string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, const matrix_one &request, int &id);
+string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need);
+bool check(int *arr, int kinds);
 #endif
