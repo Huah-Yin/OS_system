@@ -104,6 +104,23 @@ public:
         }
         return true;
     }
+    bool operator==(const matrix_one &other) const
+    {
+        if (other.rows() != this->rows())
+            throw invalid_argument(matrix_message);
+        else
+        {
+            // 比较每个元素，如果有任何不满足条件的，返回 false。
+            for (int i = 0; i < this->rows(); i++)
+            {
+                if (this->matrix[i] != other.matrix[i])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 };
 class matrix_two
 {

@@ -3,18 +3,25 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "banker.hpp"
 using namespace std;
 string read_error = "error->无法读取该文件\n";
 
 void print_matrix(vector<vector<int>> &matrix)
 {
-    string col = " | ";
-    for (auto &row : matrix)
+    // 设置列宽
+    int terminal_width = 80;
+    int col_width = 10;
+    int row_width = col_width * matrix[0].size();
+    int left_padding = (terminal_width - row_width) / 2;
+
+    for (size_t i = 0; i < matrix.size(); ++i)
     {
-        for (auto &cell : row)
+        cout << string(left_padding, ' ');
+        for (size_t j = 0; j < matrix[i].size(); ++j)
         {
-            cout << col << cell;
+            cout << setw(col_width) << matrix[i][j];
         }
         cout << endl;
     }
@@ -190,14 +197,14 @@ string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
 }
 void printMenu()
 {
-    cout << "******************************************" << endl;
-    cout << "*                                        *" << endl;
-    cout << "*         系统资源管理程序               *" << endl;
-    cout << "*                                        *" << endl;
-    cout << "******************************************" << endl;
-    cout << "1. 查看系统当前资源使用情况" << endl;
-    cout << "2. 分析当前系统安全性" << endl;
-    cout << "3. 请求资源" << endl;
-    cout << "0. 退出程序" << endl;
-    cout << "请选择: ";
+    cout << "           ******************************************" << endl;
+    cout << "           *                                        *" << endl;
+    cout << "           *              Welcome System !          *" << endl;
+    cout << "           *                                        *" << endl;
+    cout << "           ******************************************" << endl;
+    cout << "                  1. 查看系统当前资源使用情况    " << endl;
+    cout << "                  2. 分析当前系统安全性" << endl;
+    cout << "                  3. 请求资源" << endl;
+    cout << "                  0. 退出程序" << endl;
+    cout << "                      请选择: ";
 }

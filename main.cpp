@@ -34,21 +34,32 @@ int main()
         int choice = -1;
         printMenu();
         // 用 while 替代 switch 的逻辑
-        cin >> choice;
+        scanf("%d", &choice);
         if (choice == 1)
         {
-            cout << "正在查看系统当前资源使用情况..." << endl;
-            cout << "Available矩阵:";
+            cout << "      正在查看系统当前资源使用情况..." << endl;
+            cout << "              Available矩阵:";
             print_matrix(available_matrix.matrix);
-            cout << "Allocation矩阵:";
+            cout << "              Allocation矩阵:" << endl;
             print_matrix(allocation_matrix.matrix);
-            cout << "Max矩阵:";
+            cout << "                     Max矩阵:" << endl;
             print_matrix(max_matrix.matrix);
         }
         else if (choice == 2)
         {
-            cout << "正在分析当前系统安全性..." << endl;
-            cout << "system is safe !" << endl;
+            cout << "         正在分析当前系统安全性..." << endl;
+            string str = "";
+            matrix_two need_matrix = max_matrix - allocation_matrix;
+            str = is_safe(available_matrix, allocation_matrix, need_matrix);
+            cout << "             正在计算安全序列..." << endl;
+            if (str.length() == 0 || str.at(0) == ' ') // 如果返回安全序列的第一个字符为" "
+            {
+                cout << "             系统处于不安全状态, 安全序列为空!!! " << str << endl;
+            }
+            else
+            {
+                cout << "             系统处于安全状态, 安全序列为: " << str << endl;
+            }
         }
         else if (choice == 3)
         {
@@ -70,16 +81,27 @@ int main()
                 string str = "";
                 matrix_one request(request_vector);
                 str = sec_str(available_matrix, allocation_matrix, max_matrix, request, id);
-                if (str.at(0) == ' ') // 如果返回安全序列的第一个字符为" "
+                if (str.length() == 0 || str.at(0) == ' ') // 如果返回安全序列的第一个字符为" "
                 {
-                    cout << "!!!" << endl;
+                    cout << "               无安全序列!!!" << endl;
                 }
                 else
                 {
                     cout << " SecStr= " << str << endl;
                     // 数据更新 need[] = max - allocation，max[] 一直未改变，所以无需更新 need，只需在函数中计算。
-                    available_matrix -= request;
-                    allocation_matrix.add_two_one(request, id);
+                    matrix_two need_matrix = max_matrix - allocation_matrix;
+                    // 为后续比较做准备
+                    matrix_one need_id(need_matrix.matrix[id], true);
+                    if (need_id == request) // 进程已结束
+                    {
+                        available_matrix += matrix_one(allocation_matrix.matrix[id], true); // 更新 Available
+                        allocation_matrix.matrix[id].assign(allocation_matrix.cols(), 0);
+                    }
+                    else // 进程未结束
+                    {
+                        available_matrix -= request;
+                        allocation_matrix.add_two_one(request, id);
+                    }
                 }
             }
         }
