@@ -5,70 +5,8 @@
 #include <sstream>
 #include "banker.hpp"
 using namespace std;
+string read_error = "error->ÎŞ·¨¶ÁÈ¡¸ÃÎÄ¼ş\n";
 
-void read_csv(vector<int> &available, string &csv_path)
-{
-    ifstream file(csv_path);
-    if (!file.is_open())
-    {
-        cout << "error->æ— æ³•è¯»å–è¯¥æ–‡ä»¶\n";
-    }
-    else
-    {
-        string line; // æŒ‰è¡Œè¯»å–
-        int row = 0;
-        while (getline(file, line))
-        {
-            if (row)
-            {
-                string cell;
-                stringstream ss(line); // åˆ†å‰²
-                while (getline(ss, cell, ','))
-                {
-                    int num = stoi(cell);
-                    available.emplace_back(num); // å°†å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•´æ•°
-                }
-            }
-            row++; // è·³è¿‡ç¬¬ä¸€è¡Œ
-        }
-    }
-}
-void read_csv(vector<vector<int>> &two_matrix, string &csv_path)
-{
-    ifstream file(csv_path);
-    if (!file.is_open())
-    {
-        // cout << "error->æ— æ³•è¯»å–è¯¥æ–‡ä»¶" << endl;
-    }
-    else
-    {
-        string line; // æŒ‰è¡Œè¯»å–
-        int row = 0;
-        while (getline(file, line))
-        {
-            if (row)
-            {
-                int column = 0;
-                string cell;
-                stringstream ss(line); // åˆ†å‰²
-                vector<int> temp;
-                while (getline(ss, cell, ','))
-                {
-                    if (column)
-                    {
-                        if (cell.empty())
-                            break;
-                        int num = stoi(cell);
-                        temp.emplace_back(num); // å°†å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•´æ•°
-                    }
-                    column++; // è¯»å–ç¬¬äºŒåˆ—
-                }
-                two_matrix.push_back(temp);
-            }
-            row++; // è·³è¿‡ç¬¬ä¸€è¡Œ
-        }
-    }
-}
 void print_matrix(vector<vector<int>> &matrix)
 {
     string col = " | ";
@@ -90,23 +28,88 @@ void print_matrix(vector<int> &matrix)
     }
     cout << endl;
 }
+
+void read_csv(vector<int> &available, string &csv_path)
+{
+    ifstream file(csv_path);
+    if (!file.is_open())
+    {
+        cout << read_error;
+    }
+    else
+    {
+        string line; // °´ĞĞ¶ÁÈ¡
+        int row = 0;
+        while (getline(file, line))
+        {
+            if (row)
+            {
+                string cell;
+                stringstream ss(line); // ·Ö¸î
+                while (getline(ss, cell, ','))
+                {
+                    int num = stoi(cell);
+                    available.emplace_back(num); // ½«×Ö·û´®×ª»»ÎªÕûÊı
+                }
+            }
+            row++; // Ìø¹ıµÚÒ»ĞĞ
+        }
+    }
+}
+void read_csv(vector<vector<int>> &two_matrix, string &csv_path)
+{
+    ifstream file(csv_path);
+    if (!file.is_open())
+    {
+        cout << read_error;
+    }
+    else
+    {
+        string line; // °´ĞĞ¶ÁÈ¡
+        int row = 0;
+        while (getline(file, line))
+        {
+            if (row)
+            {
+                int column = 0;
+                string cell;
+                stringstream ss(line); // ·Ö¸î
+                vector<int> temp;
+                while (getline(ss, cell, ','))
+                {
+                    if (column)
+                    {
+                        if (cell.empty())
+                            break;
+                        int num = stoi(cell);
+                        temp.emplace_back(num); // ½«×Ö·û´®×ª»»ÎªÕûÊı
+                    }
+                    column++; // ¶ÁÈ¡µÚ¶şÁĞ
+                }
+                two_matrix.push_back(temp);
+            }
+            row++; // Ìø¹ıµÚÒ»ĞĞ
+        }
+    }
+}
+
 void str_to_int(string &s, int &id, vector<int> &request)
 {
     istringstream input(s);
     string num;
     input >> num;
-    id = stoi(num); // è·å–è¿›ç¨‹ç¼–å·
+    id = stoi(num); // »ñÈ¡½ø³Ì±àºÅ
     while (input >> num)
     {
-        request.push_back(stoi(num)); // è·å–è¯·æ±‚å‘é‡
+        request.push_back(stoi(num)); // »ñÈ¡ÇëÇóÏòÁ¿
     }
 }
 string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, const matrix_one &request, int &id)
 {
     string str = "";
     matrix_two need = max - allocation;
-    int kinds = available.rows();                     // èµ„æºçš„ç§ç±»
-    int process = allocation.rows();                  // è¿›ç¨‹æ•°
+    int kinds = available.rows();                     // ×ÊÔ´µÄÖÖÀà
+    int process = allocation.rows();                  // ½ø³ÌÊı
     if (request <= matrix_one(need.matrix[id], true)) // deep copy
     {
         if (request <= available)
@@ -116,7 +119,7 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
             matrix_two allocation_tmp(allocation.matrix, true);
             matrix_two need_tmp(need.matrix, true);
 
-            // è¿ç®—ç¬¦é‡è½½ -çŸ©é˜µè¿ç®—
+            // ÔËËã·ûÖØÔØ -¾ØÕóÔËËã
             available_tmp = available_tmp - request;
             allocation_tmp.add_two_one(request, id);
             need_tmp.sub_two_one(request, id);
@@ -124,13 +127,13 @@ string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, c
         }
         else
         {
-            str = "  error-> process  " + to_string(id) + " è¯·æ±‚çš„èµ„æºæ•°å¤§äºå¯ç”¨èµ„æºæ•°,è¯¥è¿›ç¨‹éœ€ç­‰å¾… !!!";
+            str = "  error-> process  " + to_string(id) + " ÇëÇóµÄ×ÊÔ´Êı´óÓÚ¿ÉÓÃ×ÊÔ´Êı,¸Ã½ø³ÌĞèµÈ´ı !!!";
             cout << str << endl;
         }
     }
     else
     {
-        str = "  error-> process  " + to_string(id) + " è¯·æ±‚çš„èµ„æºæ•°å¤§äºè¯¥è¿›ç¨‹å£°ç§°çš„èµ„æº,è¯¥è¿›ç¨‹éœ€ç­‰å¾… !!!";
+        str = "  error-> process  " + to_string(id) + " ÇëÇóµÄ×ÊÔ´Êı´óÓÚ¸Ã½ø³ÌÉù³ÆµÄ×ÊÔ´,¸Ã½ø³ÌĞèµÈ´ı !!!";
         cout << str << endl;
     }
     return str;
@@ -147,22 +150,26 @@ bool check(vector<int> &arr, int kinds)
 string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
 {
     string str = "";
-    int pid_kinds = need.rows(); // è¿›ç¨‹æ•°
+    int pid_kinds = need.rows(); // ½ø³ÌÊı
     vector<int> pid_statue(pid_kinds, 0);
     int count = 0;
     matrix_one work = available;
     while (count < pid_kinds)
     {
-        bool chosen_process = false; // é»˜è®¤æ²¡æœ‰é€‰æ‹©è¿›ç¨‹.
+        bool chosen_process = false; // Ä¬ÈÏÃ»ÓĞÑ¡Ôñ½ø³Ì.
         for (int i = 0; i < pid_kinds; i++)
         {
             if (!pid_statue[i] && matrix_one(need.matrix[i]) <= work)
             {
                 work += matrix_one(allocation.matrix[i]);
                 pid_statue[i] = 1;
-                string tmp = to_string(i) + "-->"; // itoa(i)å°†iè½¬æ¢ä¸ºå­—ç¬¦ä¸²
-                count++;                           // æœ‰æ•ˆçš„è¿›ç¨‹æ•°é‡
-                chosen_process = true;             // è¡¨ç¤ºæœ‰è¿›ç¨‹è¢«é€‰æ‹©
+                string tmp = "";
+                if (count < pid_kinds - 1)      // ´òÓ¡¸ñÊ½»¯
+                    tmp = to_string(i) + "-->"; // itoa(i)½«i×ª»»Îª×Ö·û´®
+                else
+                    tmp = to_string(i);
+                count++;               // ÓĞĞ§µÄ½ø³ÌÊıÁ¿
+                chosen_process = true; // ±íÊ¾ÓĞ½ø³Ì±»Ñ¡Ôñ
                 str += tmp;
                 break;
             }
@@ -173,11 +180,24 @@ string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need)
             break;
         }
         if (check(pid_statue, pid_kinds))
-        { // å…¨éƒ¨è¿›ç¨‹çš„çŠ¶æ€éƒ½ä¸º 1
+        { // È«²¿½ø³ÌµÄ×´Ì¬¶¼Îª 1
             break;
         }
     }
-    if (count < pid_kinds) // å‡å¦‚å‡ºç° 1-->3 -->  åé¢æ— è¿›ç¨‹å¯ä»¥æ»¡è¶³çš„æƒ…å†µ
+    if (count < pid_kinds) // ¼ÙÈç³öÏÖ 1-->3 -->  ºóÃæÎŞ½ø³Ì¿ÉÒÔÂú×ãµÄÇé¿ö
         str = "";
     return str;
+}
+void printMenu()
+{
+    cout << "******************************************" << endl;
+    cout << "*                                        *" << endl;
+    cout << "*         ÏµÍ³×ÊÔ´¹ÜÀí³ÌĞò               *" << endl;
+    cout << "*                                        *" << endl;
+    cout << "******************************************" << endl;
+    cout << "1. ²é¿´ÏµÍ³µ±Ç°×ÊÔ´Ê¹ÓÃÇé¿ö" << endl;
+    cout << "2. ·ÖÎöµ±Ç°ÏµÍ³°²È«ĞÔ" << endl;
+    cout << "3. ÇëÇó×ÊÔ´" << endl;
+    cout << "0. ÍË³ö³ÌĞò" << endl;
+    cout << "ÇëÑ¡Ôñ: ";
 }

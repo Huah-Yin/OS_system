@@ -2,7 +2,9 @@
 #define _BANKER_HPP
 #include <vector>
 #include <stdexcept>
+#include <string>
 using namespace std;
+extern string matrix_message;
 class matrix_one
 {
 public:
@@ -41,7 +43,7 @@ public:
     {
         if (other.rows() != rows())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -56,7 +58,7 @@ public:
     {
         if (other.rows() != rows())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -72,7 +74,7 @@ public:
     {
         if (other.rows() != rows())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -84,19 +86,19 @@ public:
         }
     }
 
-    // è¿ç®—ç¬¦é‡è½½ <=ï¼Œè¿”å›ä¸€ä¸ªå¸ƒå°”å€¼
+    // ¼ÆËãÊÇ·ñ·ûºÏÌõ¼ş£¬·µ»ØÒ»¸ö²¼¶ûÖµ¡£
     bool operator<=(const matrix_one &other) const
     {
         if (other.rows() != this->rows())
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         else
         {
-            // æ¯”è¾ƒæ¯ä¸ªå…ƒç´ ï¼Œå¦‚æœæœ‰ä»»ä½•ä¸æ»¡è¶³æ¡ä»¶çš„ï¼Œè¿”å› false
+            // ±È½ÏÃ¿¸öÔªËØ£¬Èç¹ûÓĞÈÎºÎ²»Âú×ãÌõ¼şµÄ£¬·µ»Ø false¡£
             for (int i = 0; i < this->rows(); i++)
             {
                 if (this->matrix[i] > other.matrix[i])
                 {
-                    return false; // åªè¦æœ‰ä¸€ä¸ªå…ƒç´ ä¸æ»¡è¶³ï¼Œè¿”å› false
+                    return false;
                 }
             }
         }
@@ -133,7 +135,7 @@ public:
 
         matrix.resize(row, vector<int>(column, value));
     }
-    // è·å–è¡Œæ•°å’Œåˆ—æ•°
+    // »ñÈ¡¾ØÕóÎ¬¶È
     int rows() const
     {
         return matrix.size();
@@ -147,7 +149,7 @@ public:
     {
         if (this->cols() != other.rows())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -162,7 +164,7 @@ public:
     {
         if (this->cols() != other.rows())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -177,7 +179,7 @@ public:
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -195,7 +197,7 @@ public:
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
@@ -220,11 +222,11 @@ public:
     {
         if (other.rows() != rows() || other.cols() != cols())
         {
-            throw invalid_argument("çŸ©é˜µç»´åº¦ä¸åŒ¹é…\n");
+            throw invalid_argument(matrix_message);
         }
         else
         {
-            // æ¯”è¾ƒæ¯ä¸ªå…ƒç´ ï¼Œå¦‚æœæœ‰ä»»ä½•ä¸æ»¡è¶³æ¡ä»¶çš„ï¼Œè¿”å› false
+            // ±È½ÏÃ¿¸öÔªËØ£¬Èç¹ûÓĞÈÎºÎ²»Âú×ãÌõ¼şµÄ£¬·µ»Ø false¡£
             for (int i = 0; i < rows(); ++i)
             {
                 for (int j = 0; j < cols(); ++j)
@@ -239,12 +241,14 @@ public:
         }
     }
 };
+// º¯ÊıÉùÃ÷
 void read_csv(vector<int> &available, string &csv_path);
 void read_csv(vector<vector<int>> &two_matrix, string &csv_path);
-void print_matrix(vector<vector<int>> const &matrix);
-void print_matrix(vector<int> const &matrix);
+void print_matrix(vector<int> &matrix);
+void print_matrix(vector<vector<int>> &matrix);
 void str_to_int(string &s, int &id, vector<int> &request);
 string sec_str(matrix_one &available, matrix_two &allocation, matrix_two &max, const matrix_one &request, int &id);
 string is_safe(matrix_one &available, matrix_two &allocation, matrix_two &need);
-bool check(int *arr, int kinds);
+bool check(vector<int> &arr, int kinds);
+void printMenu();
 #endif

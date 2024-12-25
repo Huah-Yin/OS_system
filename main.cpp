@@ -5,14 +5,15 @@
 #include <sstream>
 #include <stdexcept>
 #include "banker.hpp"
+string matrix_message = "¾ØÕóÎ¬¶È²»Æ¥Åä";
 // #define int unsigned long long
 using namespace std;
 
 int main()
 {
-    string path_available = "F:\\EXCEL\\Available.csv";
-    string path_max = "F:\\EXCEL\\Max.csv";
-    string path_allocation = "F:\\EXCEL\\Allocation.csv";
+    string path_available = "F:\\EXCEL\\Available_csv.csv";
+    string path_max = "F:\\EXCEL\\Max_csv.csv";
+    string path_allocation = "F:\\EXCEL\\Allocation_csv.csv";
 
     vector<int> available;
     vector<vector<int>> allocation;
@@ -21,40 +22,75 @@ int main()
     read_csv(available, path_available);
     read_csv(max, path_max);
     read_csv(allocation, path_allocation);
-    // æµ…æ‹·è´
+
+    // ¾ØÕó³õÊ¼»¯
     matrix_one available_matrix(available);
     matrix_two max_matrix(max);
     matrix_two allocation_matrix(allocation);
+
     while (true)
     {
-        string request_str;
-        printf(" please input id  and request matrix :");
-        getline(cin, request_str);
-        if (request_str.empty())
+
+        int choice = -1;
+        printMenu();
+        // ÓÃ while Ìæ´ú switch µÄÂß¼­
+        cin >> choice;
+        if (choice == 1)
         {
-            cout << "no null !!!" << endl;
+            cout << "ÕıÔÚ²é¿´ÏµÍ³µ±Ç°×ÊÔ´Ê¹ÓÃÇé¿ö..." << endl;
+            cout << "Available¾ØÕó:";
+            print_matrix(available_matrix.matrix);
+            cout << "Allocation¾ØÕó:";
+            print_matrix(allocation_matrix.matrix);
+            cout << "Max¾ØÕó:";
+            print_matrix(max_matrix.matrix);
         }
-        else
+        else if (choice == 2)
         {
-            int id;
-            vector<int> request_vector;
-            str_to_int(request_str, id, request_vector);
-            // å…ˆæ„é€ ä¸€ä¸ªæ–°çš„matrixï¼Œç›¸å‡ï¼Œç„¶åå† moveã€‚
-            string str = "";
-            matrix_one request(request_vector);
-            str = sec_str(available_matrix, allocation_matrix, max_matrix, request, id);
-            if (str.at(0) == ' ')
+            cout << "ÕıÔÚ·ÖÎöµ±Ç°ÏµÍ³°²È«ĞÔ..." << endl;
+            cout << "system is safe !" << endl;
+        }
+        else if (choice == 3)
+        {
+            cout << "ÕıÔÚÇëÇó×ÊÔ´..." << endl;
+            printf("ÇëÊäÈë½ø³ÌºÅ id ÓëÇëÇóÏòÁ¿ request(ÒÔ¿Õ¸ñ·Ö¸ô): \n");
+            string request_str;
+            cin.ignore();
+            getline(cin, request_str);
+            if (request_str.empty())
             {
-                cout << "  !!!" << endl;
+                cout << "ÊäÈëÎª¿Õ!!!" << endl;
             }
             else
             {
-                cout << " SecStr= " << str << endl;
-                // æ•°å€¼æ›´æ–° need[]=max-allocation,maxä¸€ç›´æœªæ”¹å˜ï¼Œæ‰€ä»¥ä¸ç”¨æ›´æ–°need,åªéœ€åœ¨å‡½æ•°ä¸­è®¡ç®—
-                available_matrix -= request;
-                allocation_matrix.add_two_one(request, id);
-                // print_matrix(available_matrix.matrix);
+                int id;
+                vector<int> request_vector;
+                str_to_int(request_str, id, request_vector);
+                // ÏÈ´´½¨Ò»¸öĞÂµÄ matrix£¬Ïà·´£¬È»ºóÔÙÒÆ¶¯Ëü¡£
+                string str = "";
+                matrix_one request(request_vector);
+                str = sec_str(available_matrix, allocation_matrix, max_matrix, request, id);
+                if (str.at(0) == ' ') // Èç¹û·µ»Ø°²È«ĞòÁĞµÄµÚÒ»¸ö×Ö·ûÎª" "
+                {
+                    cout << "!!!" << endl;
+                }
+                else
+                {
+                    cout << " SecStr= " << str << endl;
+                    // Êı¾İ¸üĞÂ need[] = max - allocation£¬max[] Ò»Ö±Î´¸Ä±ä£¬ËùÒÔÎŞĞè¸üĞÂ need£¬Ö»ĞèÔÚº¯ÊıÖĞ¼ÆËã¡£
+                    available_matrix -= request;
+                    allocation_matrix.add_two_one(request, id);
+                }
             }
+        }
+        else if (choice == 0)
+        {
+            cout << "ÍË³ö³ÌĞò£¬ÔÙ¼û£¡" << endl;
+            break;
+        }
+        else
+        {
+            cout << "ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØĞÂÊäÈë£¡" << endl;
         }
     }
     return 0;
